@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymPro - Sistema Profissional</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #1e40af;
+            --secondary: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            --success: #22c55e;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Login Page Styles */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: var(--shadow-xl);
+            width: 100%;
+            max-width: 480px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .login-header p {
+            color: var(--gray-600);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--light);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            background: white;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-800);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-200);
+        }
+
+        /* Dashboard Layout */
+        .dashboard {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            z-index: 1000;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 32px 24px;
+            border-bottom: 1px solid var(--gray-200);
+            background: var(--primary);
+            color: white;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-nav {
+            padding: 24px 0;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 16px 24px;
+            color: var(--gray-600);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--primary);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .nav-item i {
+            width: 20px;
+            margin-right: 12px;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            background: var(--light);
+        }
+
+        .topbar {
+            background: white;
+            padding: 20px 32px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .topbar-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: var(--gray-100);
+            border-radius: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .content-area {
+            padding: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Page Styles */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .page-description {
+            color: var(--gray-600);
+            font-size: 1.1rem;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-200);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-200);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-icon.primary { background: var(--primary); }
+        .stat-icon.success { background: var(--success); }
+        .stat-icon.warning { background: var(--warning); }
+        .stat-icon.danger { background: var(--danger); }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: var(--gray-600);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 32px;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Tables */
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-200);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: var(--gray-50);
+            padding: 20px 24px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gray-800);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .data-table td {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .data-table tr:hover {
+            background: var(--gray-50);
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+        }
+
+        .status-inactive {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+        }
+
+        .status-maintenance {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+        }
+
+        /* Search */
+        .search-container {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 20px 16px 48px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-600);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .topbar {
+                padding: 16px 20px;
+            }
+
+            .content-area {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .data-table {
+                font-size: 0.9rem;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 12px 16px;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray-600);
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        /* Logout Button */
+        .logout-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1><i class="fas fa-dumbbell"></i>GymPro</h1>
+                <p>Sistema Profissional de Gerenciamento</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Usuário</label>
+                    <input type="text" id="username" class="form-input" placeholder="Digite seu usuário" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" class="form-input" placeholder="Digite sua senha" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <span class="login-text">Entrar</span>
+                    <div class="loading" style="display: none;"></div>
+                </button>
+            </form>
+            
+            <div style="margin-top: 24px; text-align: center; color: var(--gray-600); font-size: 0.9rem;">
+                <p><strong>Usuário:</strong> admin | <strong>Senha:</strong> admin123</p>
+                <p><strong>Usuário:</strong> funcionario | <strong>Senha:</strong> func123</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-dumbbell"></i>GymPro</h2>
+            </div>
+            <div class="sidebar-nav">
+                <button class="nav-item active" onclick="showPage('overview')">
+                    <i class="fas fa-chart-dashboard"></i>Visão Geral
+                </button>
+                <button class="nav-item" onclick="showPage('students')">
+                    <i class="fas fa-users"></i>Alunos
+                </button>
+                <button class="nav-item" onclick="showPage('equipment')">
+                    <i class="fas fa-cogs"></i>Equipamentos
+                </button>
+                <button class="nav-item" onclick="showPage('maintenance')">
+                    <i class="fas fa-wrench"></i>Manutenção
+                </button>
+                <button class="nav-item" onclick="showPage('plans')">
+                    <i class="fas fa-credit-card"></i>Planos
+                </button>
+                <button class="nav-item" onclick="showPage('payments')">
+                    <i class="fas fa-dollar-sign"></i>Pagamentos
+                </button>
+                <button class="nav-item" onclick="showPage('reports')">
+                    <i class="fas fa-chart-line"></i>Relatórios
+                </button>
+                <button class="nav-item" onclick="showPage('settings')">
+                    <i class="fas fa-cog"></i>Configurações
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="topbar">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="topbar-title" id="pageTitle">Visão Geral</h1>
+                </div>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar">A</div>
+                        <span id="userName">Admin</span>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Overview Page -->
+                <div id="overview" class="page active">
+                    <div class="page-header">
+                        <h2 class="page-title">Dashboard Principal</h2>
+                        <p class="page-description">Visão geral dos dados da academia</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon primary">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-number" id="totalStudents">124</div>
+                            <div class="stat-label">Total de Alunos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon success">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <div class="stat-number" id="activeStudents">98</div>
+                            <div class="stat-label">Alunos Ativos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon warning">
+                                <i class="fas fa-dumbbell"></i>
+                            </div>
+                            <div class="stat-number" id="totalEquipment">45</div>
+                            <div class="stat-label">Equipamentos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon danger">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-number" id="maintenanceNeeded">3</div>
+                            <div class="stat-label">Manutenções Pendentes</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Atividade Recente</h3>
+                        </div>
+                        <div id="recentActivity">
+                            <p style="color: var(--gray-600);">Carregando atividades recentes...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Students Page -->
+                <div id="students" class="page">
+                    <div class="page-header">
+                        <h2 class="page-title">Gerenciamento de Alunos</h2>
+                        <p class="page-description">Cadastre e gerencie todos os alunos da academia</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Cadastrar Novo Aluno</h3>
+                        </div>
+                        
+                        <form id="studentForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Nome Completo</label>
+                                    <input type="text" id="studentName" class="form-input" placeholder="Digite o nome completo" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="studentEmail" class="form-input" placeholder="Digite o email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Telefone</label>
+                                    <input type="tel" id="studentPhone" class="form-input" placeholder="(00) 00000-0000" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>CPF</label>
+                                    <input type="text" id="studentCPF" class="form-input" placeholder="000.000.000-00" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Data de Nascimento</label>
+                                    <input type="date" id="studentBirth" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Plano</label>
+                                    <select id="studentPlan" class="form-input" required>
+                                        <option value="">Selecione um plano</option>
+                                        <option value="mensal">Mensal - R$ 89,90</option>
+                                        <option value="trimestral">Trimestral - R$ 249,90</option>
+                                        <option value="semestral">Semestral - R$ 479,90</option>
+                                        <option value="anual">Anual - R$ 899,90</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Cadastrar Aluno
+                                </button>
+                                <button type="reset" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Limpar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card" style="margin-top: 32px;">
+                        <div class="card-header">
+                            <h3 class="card-title">Lista de Alunos</h3>
+                        </div>
+                        
+                        <div class="search-container">
+                            <input type="text" class="search-input" id="studentSearch" placeholder="Buscar por nome, email ou CPF...">
+                            <i class="fas fa-search search-icon"></i>
+                        </div>
+
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Telefone</th>
+                                        <th>Plano</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentsTable">
+                                    <!-- Students will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Equipment Page -->
+                <div id="equipment" class="page">
+                    <div class="page-header">
+                        <h2 class="page-title">Gerenciamento de Equipamentos</h2>
+                        <p class="page-description">Controle todos os equipamentos da academia</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Cadastrar Novo Equipamento</h3>
+                        </div>
+                        
+                        <form id="equipmentForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Nome do Equipamento</label>
+                                    <input type="text" id="equipmentName" class="form-input" placeholder="Digite o nome" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Categoria</label>
+                                    <select id="equipmentCategory" class="form-input" required>
+                                        <option value="">Selecione uma categoria</option>
+                                        <option value="cardio">Cardio</option>
+                                        <option value="musculacao">Musculação</option>
+                                        <option value="funcional">Funcional</option>
+                                        <option value="crossfit">CrossFit</option>
+                                        <option value="aerobico">Aeróbico</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Marca</label>
+                                    <input type="text" id="equipmentBrand" class="form-input" placeholder="Digite a marca" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Número de Série</label>
+                                    <input type="text" id="equipmentSerial" class="form-input" placeholder="Digite o número de série" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Data de Aquisição</label>
+                                    <input type="date" id="equipmentDate" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select id="equipmentStatus" class="form-input" required>
+                                        <option value="ok">Funcionando</option>
+                                        <option value="maintenance">Manutenção</option>
+                                        <option value="broken">Quebrado</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Cadastrar Equipamento
+                                </button>
+                                <button type="reset" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Limpar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card" style="margin-top: 32px;">
+                        <div class="card-header">
+                            <h3 class="card-title">Lista de Equipamentos</h3>
+                        </div>
+                        
+                        <div class="search-container">
+                            <input type="text" class="search-input" id="equipmentSearch" placeholder="Buscar por nome, marca ou categoria...">
+                            <i class="fas fa-search search-icon"></i>
+                        </div>
+
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Categoria</th>
+                                        <th>Marca</th>
+                                        <th>Status</th>
+                                        <th>Data Aquisição</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="equipmentTable">
+                                    <!-- Equipment will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Maintenance Page -->
+                <div id="maintenance" class="page">
+                    <div class="page-header">
+                        <h2 class="page-title">Controle de Manutenção</h2>
+                        <p class="page-description">Gerencie todas as manutenções dos equipamentos</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon success">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="stat-number" id="equipmentOk">42</div>
+                            <div class="stat-label">Funcionando</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon warning">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                            <div class="stat-number" id="equipmentMaintenance">2</div>
+                            <div class="stat-label">Em Manutenção</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon danger">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-number" id="equipmentBroken">1</div>
+                            <div class="stat-label">Quebrados</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Agendar Manutenção</h3>
+                        </div>
+                        
+                        <form id="maintenanceForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Equipamento</label>
+                                    <select id="maintenanceEquipment" class="form-input" required>
+                                        <option value="">Selecione um equipamento</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Tipo de Manutenção</label>
+                                    <select id="maintenanceType" class="form-input" required>
+                                        <option value="preventiva">Preventiva</option>
+                                        <option value="corretiva">Corretiva</option>
+                                        <option value="emergencial">Emergencial</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Data Programada</label>
+                                    <input type="date" id="maintenanceDate" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Técnico Responsável</label>
+                                    <input type="text" id="maintenanceTechnician" class="form-input" placeholder="Nome do técnico" required>
+                                </div>
+                                <div class="form-group" style="grid-column: 1 / -1;">
+                                    <label>Descrição do Problema/Serviço</label>
+                                    <textarea id="maintenanceDescription" class="form-input" rows="3" placeholder="Descreva o problema ou serviço" required></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Agendar Manutenção
+                                </button>
+                                <button type="reset" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Limpar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card" style="margin-top: 32px;">
+                        <div class="card-header">
+                            <h3 class="card-title">Histórico de Manutenções</h3>
+                        </div>
+
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Equipamento</th>
+                                        <th>Tipo</th>
+                                        <th>Data</th>
+                                        <th>Técnico</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="maintenanceTable">
+                                    <!-- Maintenance will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plans Page -->
+                <div id="plans" class="page">
+                    <div class="page-header">
+                        <h2 class="page-title">Planos de Assinatura</h2>
+                        <p class="page-description">Gerencie os planos disponíveis na academia</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon primary">
+                                <i class="fas fa-calendar"></i>
+                            </div>
+                            <div class="stat-number">45</div>
+                            <div class="stat-label">Planos Mensais</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon success">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="stat-number">28</div>
+                            <div class="stat-label">Planos Trimestrais</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon warning">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="stat-number">18</div>
+                            <div class="stat-label">Planos Semestrais</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon danger">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <div class="stat-number">7</div>
+                            <div class="stat-label">Planos Anuais</div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Plano Mensal</h3>
+                            </div>
+                            <div style="text-align: center; padding: 20px 0;">
+                                <div style="font-size: 3rem; font-weight: 800; color: var(--primary); margin-bottom: 8px;">R$ 89,90</div>
+                                <div style="color: var(--gray-600); margin-bottom: 24px;">por mês</div>
+                                <ul style="text-align: left; color: var(--gray-700); line-height: 1.8;">
+                                    <li>✓ Acesso completo à academia</li>
+                                    <li>✓ Uso de todos os equipamentos</li>
+                                    <li>✓ Aulas em grupo básicas</li>
+                                    <li>✓ Avaliação física mensal</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="card" style="border: 2px solid var(--primary);">
+                            <div class="card-header">
+                                <h3 class="card-title" style="color: var(--primary);">Plano Trimestral ⭐</h3>
+                            </div>
+                            <div style="text-align: center; padding: 20px 0;">
+                                <div style="font-size: 3rem; font-weight: 800; color: var(--primary); margin-bottom: 8px;">R$ 249,90</div>
+                                <div style="color: var(--gray-600); margin-bottom: 24px;">por trimestre</div>
+                                <ul style="text-align: left; color: var(--gray-700); line-height: 1.8;">
+                                    <li>✓ Tudo do plano mensal</li>
+                                    <li>✓ Aulas funcionais</li>
+                                    <li>✓ Desconto de 7%</li>
+                                    <li>✓ Suporte nutricional básico</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Plano Semestral</h3>
+                            </div>
+                            <div style="text-align: center; padding: 20px 0;">
+                                <div style="font-size: 3rem; font-weight: 800; color: var(--primary); margin-bottom: 8px;">R$ 479,90</div>
+                                <div style="color: var(--gray-600); margin-bottom: 24px;">por semestre</div>
+                                <ul style="text-align: left; color: var(--gray-700); line-height: 1.8;">
+                                    <li>✓ Tudo do plano trimestral</li>
+                                    <li>✓ Personal trainer 2x/mês</li>
+                                    <li>✓ Desconto de 12%</li>
+                                    <li>✓ Acompanhamento completo</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="card" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white;">
+                            <div class="card-header" style="border-color: rgba(255,255,255,0.2);">
+                                <h3 class="card-title" style="color: white;">Plano Anual 👑</h3>
+                            </div>
+                            <div style="text-align: center; padding: 20px 0;">
+                                <div style="font-size: 3rem; font-weight: 800; margin-bottom: 8px;">R$ 899,90</div>
+                                <div style="opacity: 0.9; margin-bottom: 24px;">por ano</div>
+                                <ul style="text-align: left; line-height: 1.8; opacity: 0.95;">
+                                    <li>✓ Tudo dos outros planos</li>
+                                    <li>✓ Personal trainer ilimitado</li>
+                                    <li>✓ Desconto de 17%</li>
+                                    <li>✓ Aulas premium exclusivas</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payments Page -->
+                <div id="payments" class="page">
+                    <div class="page-header">
+                        <h2 class="page-title">Controle de Pagamentos</h2>
+                        <p class="page-description">Monitore pagamentos e faturas dos alunos</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon success">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-number">R$ 12.450</div>
+                            <div class="stat-label">Recebido Este Mês</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon warning">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-number">R$ 2.180</div>
+                            <div class="stat-label">Pendente</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon danger">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <div class="stat-number">R$ 890</div>
+                            <div class="stat-label">Em Atraso</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon primary">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="stat-number">R$ 15.520</div>
+                            <div class="stat-label">Total Esperado</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Últimos Pagamentos</h3>
+                        </div>
+
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Aluno</th>
+                                        <th>Plano</th>
+                                        <th>Valor</th>
+                                        <th>Data Vencimento</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paymentsTable">
+                                    <tr>
+                                        <td>João Silva</td>
+                                        <td>Mensal</td>
+                                        <td>R$ 89,90</td>
+                                        <td>15/12/2025</td>
+                                        <td><span class="status-badge status-active">Pago</span></td>
+                                        <td>
+                                            <button class="btn btn-primary btn-sm">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Maria Santos</td>
+                                        <td>Trimestral</td>
+                                        <td>R$ 249,90</td>
+                                        <td>20/12/2025</td>
+                                        <td><span class="status-badge status-maintenance">Pendente</span></td>
+                                        <td>
+                                            <button class="btn btn-warning btn-sm">
+                                                <i class="fas fa-bell"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Carlos Oliveira</td>
+                                        <td>Mensal</td>
+                                        <td>R$ 89,90</td>
+                                        <td>10/12/2025</td>
+                                        <td><span class="status-badge status-inactive">Atrasado</span></td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Page -->
+                <div id="reports" class="page">
+                    <div class="page-header">
+                        <h2 class="page-title">Relatórios Gerenciais</h2>
+                        <p class="page-description">Análises e relatórios detalhados da academia</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon primary">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-number">+12</div>
+                            <div class="stat-label">Novos Alunos (Mês)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon success">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div class="stat-number">94%</div>
+                            <div class="stat-label">Taxa de Retenção</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon warning">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="stat-number">76%</div>
+                            <div class="stat-label">Ocupação Média</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon danger">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="stat-number">4.8</div>
+                            <div class="stat-label">Avaliação Média</div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px;">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Crescimento Mensal</h3>
+                            </div>
+                            <div style="height: 200px; display: flex; align-items: center; justify-content: center; color: var(--gray-600);">
+                                <i class="fas fa-chart-line" style="font-size: 3rem; opacity: 0.3;"></i>
+                                <span style="margin-left: 16px;">Gráfico de crescimento aqui</span>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Distribuição por Planos</h3>
+                            </div>
+                            <div style="height: 200px; display: flex; align-items: center; justify-content: center; color: var(--gray-600);">
+                                <i class="fas fa-chart-pie" style="font-size: 3rem; opacity: 0.3;"></i>
+                                <span style="margin-left: 16px;">Gráfico de pizza aqui</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top: 32px;">
+                        <div class="card-header">
+                            <h3 class="card-title">Exportar Relatórios</h3>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-file-pdf"></i> Relatório PDF
+                            </button>
+                            <button class="btn btn-success">
+                                <i class="fas fa-file-excel"></i> Planilha Excel
+                            </button>
+                            <button class="btn btn-warning">
+                                <i class="fas fa-envelope"></i> Enviar por Email
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Page -->
+                <div id="settings" class="page">
+                    <div class="page-header">
+                        <h2 class="page-title">Configurações do Sistema</h2>
+                        <p class="page-description">Configure as preferências da academia</p>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px;">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Dados da Academia</h3>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Nome da Academia</label>
+                                    <input type="text" class="form-input" value="GymPro Academia">
+                                </div>
+                                <div class="form-group">
+                                    <label>CNPJ</label>
+                                    <input type="text" class="form-input" value="12.345.678/0001-90">
+                                </div>
+                                <div class="form-group">
+                                    <label>Telefone</label>
+                                    <input type="text" class="form-input" value="(11) 99999-9999">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" class="form-input" value="contato@gympro.com.br">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Configurações de Sistema</h3>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Backup Automático</label>
+                                    <select class="form-input">
+                                        <option>Diário</option>
+                                        <option>Semanal</option>
+                                        <option>Mensal</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Horário de Funcionamento</label>
+                                    <input type="text" class="form-input" value="06:00 - 22:00">
+                                </div>
+                                <div class="form-group">
+                                    <label>Capacidade Máxima</label>
+                                    <input type="number" class="form-input" value="150">
+                                </div>
+                                <div class="form-group">
+                                    <label>Taxa de Matrícula</label>
+                                    <input type="text" class="form-input" value="R$ 50,00">
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Salvar Configurações
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Usuários do Sistema</h3>
+                            </div>
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Nome</th>
+                                            <th>Usuário</th>
+                                            <th>Perfil</th>
+                                            <th>Status</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Administrador</td>
+                                            <td>admin</td>
+                                            <td>Administrador</td>
+                                            <td><span class="status-badge status-active">Ativo</span></td>
+                                            <td>
+                                                <button class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Funcionário</td>
+                                            <td>funcionario</td>
+                                            <td>Funcionário</td>
+                                            <td><span class="status-badge status-active">Ativo</span></td>
+                                            <td>
+                                                <button class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulated Database
+        class GymDatabase {
+            constructor() {
+                this.students = JSON.parse(localStorage.getItem('gym_students')) || this.getDefaultStudents();
+                this.equipment = JSON.parse(localStorage.getItem('gym_equipment')) || this.getDefaultEquipment();
+                this.maintenance = JSON.parse(localStorage.getItem('gym_maintenance')) || this.getDefaultMaintenance();
+                this.users = [
+                    { username: 'admin', password: 'admin123', name: 'Administrador', role: 'admin' },
+                    { username: 'funcionario', password: 'func123', name: 'Funcionário', role: 'employee' }
+                ];
+            }
+
+            getDefaultStudents() {
+                return [
+                    {
+                        id: 1,
+                        name: 'João Silva',
+                        email: 'joao@email.com',
+                        phone: '(11) 99999-1111',
+                        cpf: '123.456.789-10',
+                        birth: '1990-05-15',
+                        plan: 'mensal',
+                        status: 'active',
+                        enrollment: '2025-01-15'
+                    },
+                    {
+                        id: 2,
+                        name: 'Maria Santos',
+                        email: 'maria@email.com',
+                        phone: '(11) 99999-2222',
+                        cpf: '987.654.321-00',
+                        birth: '1988-08-22',
+                        plan: 'trimestral',
+                        status: 'active',
+                        enrollment: '2024-11-20'
+                    },
+                    {
+                        id: 3,
+                        name: 'Carlos Oliveira',
+                        email: 'carlos@email.com',
+                        phone: '(11) 99999-3333',
+                        cpf: '456.789.123-45',
+                        birth: '1985-12-10',
+                        plan: 'mensal',
+                        status: 'inactive',
+                        enrollment: '2024-12-01'
+                    }
+                ];
+            }
+
+            getDefaultEquipment() {
+                return [
+                    {
+                        id: 1,
+                        name: 'Esteira Elétrica',
+                        category: 'cardio',
+                        brand: 'TechnoGym',
+                        serial: 'TG001234',
+                        date: '2024-01-15',
+                        status: 'ok'
+                    },
+                    {
+                        id: 2,
+                        name: 'Leg Press 45°',
+                        category: 'musculacao',
+                        brand: 'Life Fitness',
+                        serial: 'LF005678',
+                        date: '2023-08-20',
+                        status: 'maintenance'
+                    },
+                    {
+                        id: 3,
+                        name: 'Bicicleta Ergométrica',
+                        category: 'cardio',
+                        brand: 'Schwinn',
+                        serial: 'SW009876',
+                        date: '2023-12-05',
+                        status: 'broken'
+                    }
+                ];
+            }
+
+            getDefaultMaintenance() {
+                return [
+                    {
+                        id: 1,
+                        equipmentId: 2,
+                        type: 'preventiva',
+                        date: '2025-09-15',
+                        technician: 'João Técnico',
+                        description: 'Lubrificação e ajuste dos cabos',
+                        status: 'agendado'
+                    }
+                ];
+            }
+
+            save() {
+                localStorage.setItem('gym_students', JSON.stringify(this.students));
+                localStorage.setItem('gym_equipment', JSON.stringify(this.equipment));
+                localStorage.setItem('gym_maintenance', JSON.stringify(this.maintenance));
+            }
+        }
+
+        // Initialize database
+        const db = new GymDatabase();
+        let currentUser = null;
+
+        // Authentication
+        function login(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Show loading
+            const loginText = document.querySelector('.login-text');
+            const loading = document.querySelector('.loading');
+            loginText.style.display = 'none';
+            loading.style.display = 'inline-block';
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                const user = db.users.find(u => u.username === username && u.password === password);
+                
+                if (user) {
+                    currentUser = user;
+                    document.getElementById('loginPage').style.display = 'none';
+                    document.getElementById('dashboard').classList.add('active');
+                    
+                    // Update user info
+                    document.getElementById('userName').textContent = user.name;
+                    document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
+                    
+                    // Initialize dashboard
+                    updateDashboard();
+                    renderStudents();
+                    renderEquipment();
+                    renderMaintenance();
+                    populateEquipmentSelect();
+                } else {
+                    alert('Usuário ou senha inválidos!');
+                }
+                
+                // Hide loading
+                loginText.style.display = 'inline';
+                loading.style.display = 'none';
+            }, 1500);
+        }
+
+        function logout() {
+            if (confirm('Deseja realmente sair do sistema?')) {
+                currentUser = null;
+                document.getElementById('dashboard').classList.remove('active');
+                document.getElementById('loginPage').style.display = 'flex';
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+            }
+        }
+
+        // Navigation
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Remove active class from nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            event.target.classList.add('active');
+            
+            // Update page title
+            const titles = {
+                'overview': 'Visão Geral',
+                'students': 'Gerenciamento de Alunos',
+                'equipment': 'Gerenciamento de Equipamentos', 
+                'maintenance': 'Controle de Manutenção',
+                'plans': 'Planos de Assinatura',
+                'payments': 'Controle de Pagamentos',
+                'reports': 'Relatórios Gerenciais',
+                'settings': 'Configurações do Sistema'
+            };
+            
+            document.getElementById('pageTitle').textContent = titles[pageId] || 'Dashboard';
+            
+            if (pageId === 'overview') {
+                updateDashboard();
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+
+        // Dashboard functions
+        function updateDashboard() {
+            const totalStudents = db.students.length;
+            const activeStudents = db.students.filter(s => s.status === 'active').length;
+            const totalEquipment = db.equipment.length;
+            const maintenanceNeeded = db.equipment.filter(e => e.status === 'broken' || e.status === 'maintenance').length;
+            
+            document.getElementById('totalStudents').textContent = totalStudents;
+            document.getElementById('activeStudents').textContent = activeStudents;
+            document.getElementById('totalEquipment').textContent = totalEquipment;
+            document.getElementById('maintenanceNeeded').textContent = maintenanceNeeded;
+            
+            // Update maintenance stats
+            document.getElementById('equipmentOk').textContent = db.equipment.filter(e => e.status === 'ok').length;
+            document.getElementById('equipmentMaintenance').textContent = db.equipment.filter(e => e.status === 'maintenance').length;
+            document.getElementById('equipmentBroken').textContent = db.equipment.filter(e => e.status === 'broken').length;
+            
+            updateRecentActivity();
+        }
+
+        function updateRecentActivity() {
+            const activities = [
+                'Novo aluno cadastrado: Maria Santos',
+                'Equipamento em manutenção: Leg Press 45°',
+                'Pagamento recebido: João Silva - R$ 89,90',
+                'Manutenção agendada: Bicicleta Ergométrica'
+            ];
+            
+            const html = activities.map(activity => 
+                `<div style="padding: 12px; border-left: 4px solid var(--primary); background: var(--gray-100); margin-bottom: 8px; border-radius: 8px;">
+                    <i class="fas fa-info-circle" style="color: var(--primary); margin-right: 8px;"></i>
+                    ${activity}
+                </div>`
+            ).join('');
+            
+            document.getElementById('recentActivity').innerHTML = html;
+        }
+
+        // Student management
+        function addStudent(event) {
+            event.preventDefault();
+            
+            const student = {
+                id: Date.now(),
+                name: document.getElementById('studentName').value,
+                email: document.getElementById('studentEmail').value,
+                phone: document.getElementById('studentPhone').value,
+                cpf: document.getElementById('studentCPF').value,
+                birth: document.getElementById('studentBirth').value,
+                plan: document.getElementById('studentPlan').value,
+                status: 'active',
+                enrollment: new Date().toISOString().split('T')[0]
+            };
+            
+            db.students.push(student);
+            db.save();
+            
+            document.getElementById('studentForm').reset();
+            renderStudents();
+            updateDashboard();
+            
+            alert('Aluno cadastrado com sucesso!');
+        }
+
+        function renderStudents() {
+            const tbody = document.getElementById('studentsTable');
+            tbody.innerHTML = '';
+            
+            db.students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.name}</td>
+                    <td>${student.email}</td>
+                    <td>${student.phone}</td>
+                    <td>${student.plan}</td>
+                    <td>
+                        <span class="status-badge ${student.status === 'active' ? 'status-active' : 'status-inactive'}">
+                            ${student.status === 'active' ? 'Ativo' : 'Inativo'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="editStudent(${student.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteStudent(${student.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function deleteStudent(id) {
+            if (confirm('Tem certeza que deseja excluir este aluno?')) {
+                db.students = db.students.filter(s => s.id !== id);
+                db.save();
+                renderStudents();
+                updateDashboard();
+                alert('Aluno excluído com sucesso!');
+            }
+        }
+
+        function editStudent(id) {
+            const student = db.students.find(s => s.id === id);
+            if (student) {
+                document.getElementById('studentName').value = student.name;
+                document.getElementById('studentEmail').value = student.email;
+                document.getElementById('studentPhone').value = student.phone;
+                document.getElementById('studentCPF').value = student.cpf;
+                document.getElementById('studentBirth').value = student.birth;
+                document.getElementById('studentPlan').value = student.plan;
+                
+                deleteStudent(id);
+            }
+        }
+
+        // Equipment management
+        function addEquipment(event) {
+            event.preventDefault();
+            
+            const equipment = {
+                id: Date.now(),
+                name: document.getElementById('equipmentName').value,
+                category: document.getElementById('equipmentCategory').value,
+                brand: document.getElementById('equipmentBrand').value,
+                serial: document.getElementById('equipmentSerial').value,
+                date: document.getElementById('equipmentDate').value,
+                status: document.getElementById('equipmentStatus').value
+            };
+            
+            db.equipment.push(equipment);
+            db.save();
+            
+            document.getElementById('equipmentForm').reset();
+            renderEquipment();
+            populateEquipmentSelect();
+            updateDashboard();
+            
+            alert('Equipamento cadastrado com sucesso!');
+        }
+
+        function renderEquipment() {
+            const tbody = document.getElementById('equipmentTable');
+            tbody.innerHTML = '';
+            
+            db.equipment.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td>${item.category}</td>
+                    <td>${item.brand}</td>
+                    <td>
+                        <span class="status-badge ${getStatusClass(item.status)}">
+                            ${getStatusText(item.status)}
+                        </span>
+                    </td>
+                    <td>${new Date(item.date).toLocaleDateString('pt-BR')}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="editEquipment(${item.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteEquipment(${item.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function deleteEquipment(id) {
+            if (confirm('Tem certeza que deseja excluir este equipamento?')) {
+                db.equipment = db.equipment.filter(e => e.id !== id);
+                db.save();
+                renderEquipment();
+                populateEquipmentSelect();
+                updateDashboard();
+                alert('Equipamento excluído com sucesso!');
+            }
+        }
+
+        // Maintenance management
+        function addMaintenance(event) {
+            event.preventDefault();
+            
+            const maintenance = {
+                id: Date.now(),
+                equipmentId: parseInt(document.getElementById('maintenanceEquipment').value),
+                type: document.getElementById('maintenanceType').value,
+                date: document.getElementById('maintenanceDate').value,
+                technician: document.getElementById('maintenanceTechnician').value,
+                description: document.getElementById('maintenanceDescription').value,
+                status: 'agendado'
+            };
+            
+            db.maintenance.push(maintenance);
+            
+            // Update equipment status
+            const equipment = db.equipment.find(e => e.id === maintenance.equipmentId);
+            if (equipment) {
+                equipment.status = 'maintenance';
+            }
+            
+            db.save();
+            
+            document.getElementById('maintenanceForm').reset();
+            renderMaintenance();
+            renderEquipment();
+            updateDashboard();
+            
+            alert('Manutenção agendada com sucesso!');
+        }
+
+        function renderMaintenance() {
+            const tbody = document.getElementById('maintenanceTable');
+            tbody.innerHTML = '';
+            
+            db.maintenance.forEach(record => {
+                const equipment = db.equipment.find(e => e.id === record.equipmentId);
+                const equipmentName = equipment ? equipment.name : 'Equipamento removido';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${equipmentName}</td>
+                    <td>${record.type}</td>
+                    <td>${new Date(record.date).toLocaleDateString('pt-BR')}</td>
+                    <td>${record.technician}</td>
+                    <td>
+                        <span class="status-badge ${record.status === 'agendado' ? 'status-maintenance' : 'status-active'}">
+                            ${record.status === 'agendado' ? 'Agendado' : 'Concluído'}
+                        </span>
+                    </td>
+                    <td>
+                        ${record.status === 'agendado' ? `
+                            <button class="btn btn-success btn-sm" onclick="completeMaintenance(${record.id})">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        ` : ''}
+                        <button class="btn btn-danger btn-sm" onclick="deleteMaintenance(${record.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function completeMaintenance(id) {
+            const maintenance = db.maintenance.find(m => m.id === id);
+            if (maintenance) {
+                maintenance.status = 'concluido';
+                
+                // Update equipment status back to ok
+                const equipment = db.equipment.find(e => e.id === maintenance.equipmentId);
+                if (equipment) {
+                    equipment.status = 'ok';
+                }
+                
+                db.save();
+                renderMaintenance();
+                renderEquipment();
+                updateDashboard();
+                
+                alert('Manutenção concluída com sucesso!');
+            }
+        }
+
+        function deleteMaintenance(id) {
+            if (confirm('Tem certeza que deseja excluir este registro?')) {
+                db.maintenance = db.maintenance.filter(m => m.id !== id);
+                db.save();
+                renderMaintenance();
+                alert('Registro de manutenção excluído!');
+            }
+        }
+
+        function populateEquipmentSelect() {
+            const select = document.getElementById('maintenanceEquipment');
+            select.innerHTML = '<option value="">Selecione um equipamento</option>';
+            
+            db.equipment.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = `${item.name} - ${item.brand}`;
+                select.appendChild(option);
+            });
+        }
+
+        // Utility functions
+        function getStatusClass(status) {
+            switch (status) {
+                case 'ok': return 'status-active';
+                case 'maintenance': return 'status-maintenance';
+                case 'broken': return 'status-inactive';
+                default: return 'status-inactive';
+            }
+        }
+
+        function getStatusText(status) {
+            switch (status) {
+                case 'ok': return 'Funcionando';
+                case 'maintenance': return 'Manutenção';
+                case 'broken': return 'Quebrado';
+                default: return 'Desconhecido';
+            }
+        }
+
+        // Event listeners
+        document.getElementById('loginForm').addEventListener('submit', login);
+        document.getElementById('studentForm').addEventListener('submit', addStudent);
+        document.getElementById('equipmentForm').addEventListener('submit', addEquipment);
+        document.getElementById('maintenanceForm').addEventListener('submit', addMaintenance);
+
+        // Search functionality
+        document.getElementById('studentSearch').addEventListener('keyup', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#studentsTable tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        document.getElementById('equipmentSearch').addEventListener('keyup', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#equipmentTable tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date as default
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('equipmentDate').value = today;
+            document.getElementById('maintenanceDate').value = today;
+        });
+    </script>
+</body>
+</html>
